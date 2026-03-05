@@ -18,13 +18,6 @@ const providerSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    skills: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
-
     availability: {
       type: Boolean,
       default: true,
@@ -37,3 +30,5 @@ const providerSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+export default mongoose.model('Provider', providerSchema);
