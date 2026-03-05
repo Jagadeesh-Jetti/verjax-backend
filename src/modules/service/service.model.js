@@ -12,13 +12,20 @@ const serviceSchema = new mongoose.Schema(
       ref: 'Category',
       required: true,
     },
-    pricePerHour: {
-      type: Number,
+    title: {
+      type: String,
       required: true,
+      trim: true,
     },
     description: {
       type: String,
       trim: true,
+      trim: true,
+    },
+    hourlyPrice: {
+      type: Number,
+      required: true,
+      min: 0,
     },
     isActive: {
       type: Boolean,

@@ -18,6 +18,16 @@ const providerSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    skills: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    experienceYears: {
+      type: Number,
+      default: 0,
+    },
     availability: {
       type: Boolean,
       default: true,
