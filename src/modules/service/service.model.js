@@ -2,31 +2,44 @@ import mongoose from 'mongoose';
 
 const serviceSchema = new mongoose.Schema(
   {
-    providerId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Provider',
-      required: true,
-    },
-    categoryId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category',
-      required: true,
-    },
     title: {
       type: String,
       required: true,
       trim: true,
     },
+
     description: {
       type: String,
-      trim: true,
-      trim: true,
+      required: true,
     },
-    hourlyPrice: {
+
+    price: {
       type: Number,
       required: true,
-      min: 0,
     },
+
+    duration: {
+      type: Number, // minutes
+      required: true,
+    },
+
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
+      required: true,
+    },
+
+    providerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Provider',
+      required: true,
+    },
+
+    city: {
+      type: String,
+      required: true,
+    },
+
     isActive: {
       type: Boolean,
       default: true,

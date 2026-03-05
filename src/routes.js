@@ -11,5 +11,5 @@ router.use('/auth', authRouter);
 router.use('/categories', categoryRouter);
 router.use('/services', serviceRouter);
 router.use('/booking', bookingRouter);
-router.use('services', serviceRouter);
+router.use('/services', serviceRouter);
 router.use('/providers', providerRouter);
