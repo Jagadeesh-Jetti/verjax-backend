@@ -2,7 +2,9 @@ import express from 'express';
 import {
   createService,
   getServicesByCategoriesAndCity,
-} from './service.controller';
+} from './service.controller.js';
+import { protect } from '../../middleware/auth.middleware.js';
+import { authorize } from '../../middleware/role.middleware.js';
 
 export const serviceRouter = express.Router();
 
