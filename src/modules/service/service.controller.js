@@ -1,5 +1,6 @@
 import Service from '../service/service.model.js';
 import Provider from '../provider/provider.model.js';
+import Category from '../category/category.model.js';
 
 export const createService = async (req, res) => {
   try {
@@ -16,6 +17,14 @@ export const createService = async (req, res) => {
     if (provider.approvalStatus !== 'approved') {
       return res.status(403).json({
         message: 'Provider not approved yet',
+      });
+    }
+
+    const category = await Category.findById(categoryId);
+
+    if (!category || !category.isActive) {
+      return res.status(404).json({
+        message: 'Category not found',
       });
     }
 
@@ -131,6 +140,18 @@ export const deleteService = async (req, res) => {
     res.json({
       message: 'Service removed',
     });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getMyServices = async (req, res) => {
+  try {
+    const services = await Service.find({
+      providerId: req.provider._id,
+    });
+
+    res.json(services);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

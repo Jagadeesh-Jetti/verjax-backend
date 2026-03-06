@@ -27,6 +27,7 @@ const serviceSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',
       required: true,
+      index: true,
     },
 
     providerId: {
@@ -38,6 +39,7 @@ const serviceSchema = new mongoose.Schema(
     city: {
       type: String,
       required: true,
+      index: true,
     },
 
     isActive: {

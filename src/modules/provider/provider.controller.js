@@ -7,9 +7,15 @@ export const createProvider = async (req, res) => {
 
     const userId = req.user.id;
 
-    const existing = await Provider.findOne({ userId });
+    const existingUser = await User.findById(userId);
 
-    if (existing) {
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const existingProvider = await Provider.findOne({ userId });
+
+    if (existingProvider) {
       return res.status(400).json({
         message: 'Provider profile already exists',
       });
@@ -51,6 +57,12 @@ export const toggleAvailabilty = async (req, res) => {
     if (!provider) {
       return res.status(404).json({
         message: 'Provider not found',
+      });
+    }
+
+    if (provider.approvalStatus !== 'approved') {
+      return res.status(403).json({
+        message: 'Provider not approved yet',
       });
     }
 

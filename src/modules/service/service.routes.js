@@ -1,21 +1,25 @@
 import express from 'express';
 import {
   createService,
-  getAllServices,
-  getServicesByCity,
-  getMyServices,
+  getServices,
+  getServiceById,
+  updateService,
   deleteService,
+  getMyServices,
 } from './service.controller.js';
 import { protect } from '../../middleware/auth.middleware.js';
+import { isProvider } from '../../middleware/provider.middleware.js';
 
 export const serviceRouter = express.Router();
 
-serviceRouter.get('/', protect, isProvider, getAllServices);
+serviceRouter.get('/', getServices);
 
-serviceRouter.get('/city/:city', getServicesByCity);
+serviceRouter.get('/:id', getServiceById);
 
 serviceRouter.post('/', protect, isProvider, createService);
 
-serviceRouter.get('/me', protect, isProvider, getMyServices);
+serviceRouter.patch('/:id', protect, isProvider, updateService);
 
 serviceRouter.delete('/:id', protect, isProvider, deleteService);
+
+serviceRouter.get('/me', protect, isProvider, getMyServices);

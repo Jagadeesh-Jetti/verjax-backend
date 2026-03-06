@@ -12,7 +12,12 @@ import { authorize } from '../../middleware/role.middleware.js';
 export const providerRouter = express.Router();
 
 providerRouter.post('/', protect, createProvider);
-providerRouter.get('/me', protect, getMyProviderProfile);
-providerRouter.patch('/availability', protect, toggleAvailabilty);
+providerRouter.get('/me', protect, isProvider, getMyProviderProfile);
+providerRouter.patch('/availability', protect, isProvider, toggleAvailabilty);
 providerRouter.get('/city/:city', getProviderByCity);
-providerRouter.patch('/:id', protect, authorize('admin'), approveProvider);
+providerRouter.patch(
+  '/:id/approve',
+  protect,
+  authorize('admin'),
+  approveProvider
+);

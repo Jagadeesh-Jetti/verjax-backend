@@ -17,6 +17,7 @@ const providerSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      index: true,
     },
     skills: [
       {
@@ -27,6 +28,7 @@ const providerSchema = new mongoose.Schema(
     experienceYears: {
       type: Number,
       default: 0,
+      min: 0,
     },
     availability: {
       type: Boolean,

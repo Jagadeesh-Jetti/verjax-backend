@@ -1,10 +1,11 @@
 import Category from './category.model.js';
+import Service from '../service/service.model.js';
 
 export const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
 
-    const exists = await Category.findOne({ name });
+    const exists = await Category.findOne({ name: name.toLowerCase() });
 
     if (exists) {
       return res.status(400).json({ message: 'Category already exists' });
@@ -49,6 +50,7 @@ export const updateCategory = async (req, res) => {
 export const deleteCategory = async (req, res) => {
   try {
     const { id } = req.params;
+    const services = await Service.countDocuments({ categoryId: id });
 
     const category = await Category.findByIdAndUpdate(
       id,
@@ -59,6 +61,12 @@ export const deleteCategory = async (req, res) => {
     if (!category) {
       return res.status(404).json({
         message: 'Category not found',
+      });
+    }
+
+    if (services > 0) {
+      return res.status(400).json({
+        message: 'Catefory has services and cannot be disabled',
       });
     }
 
