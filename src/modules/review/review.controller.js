@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Review from './review.model.js';
 import Booking from '../booking/booking.model.js';
 
@@ -25,7 +26,7 @@ export const createReview = async (req, res) => {
       bookingId,
       serviceId: booking.serviceId,
       providerId: booking.providerId,
-      customerId: req.user.Id,
+      customerId: req.user.id,
       rating,
       comment,
     });
@@ -87,7 +88,7 @@ export const getProviderRating = async (req, res) => {
     }
 
     res.json({
-      averageRating: Number(Stats[0].averageRating.toFixed(1)),
+      averageRating: Number(stats[0].averageRating.toFixed(1)),
       totalReviews: stats[0].totalReviews,
     });
   } catch (error) {

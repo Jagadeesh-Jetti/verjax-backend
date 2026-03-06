@@ -6,18 +6,21 @@ const bookingSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Service',
       required: true,
+      index: true,
     },
 
     providerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Provider',
       required: true,
+      index: true,
     },
 
     customerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
+      index: true,
     },
 
     address: {
@@ -33,11 +36,15 @@ const bookingSchema = new mongoose.Schema(
     bookingDate: {
       type: Date,
       required: true,
+      index: true,
     },
 
     notes: String,
 
-    priceAtBooking: Number,
+    priceAtBooking: {
+      type: Number,
+      required: true,
+    },
 
     status: {
       type: String,

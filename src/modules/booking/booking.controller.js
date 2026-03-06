@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Booking from './booking.model.js';
 import Service from '../service/service.model.js';
+import Provider from '../provider/provider.model.js';
 
 const validTransitions = {
   requested: ['confirmed', 'cancelled'],
@@ -18,6 +19,18 @@ export const createBooking = async (req, res) => {
 
     if (!service || !service.isActive) {
       return res.status(404).json({ message: 'Service not available' });
+    }
+
+    const provider = await Provider.findById(service.providerId);
+
+    if (
+      !provider ||
+      provider.approvalStatus !== 'approved' ||
+      !provider.availability
+    ) {
+      return res.status(400).json({
+        message: 'Provider not available',
+      });
     }
 
     const booking = await Booking.create({
@@ -79,6 +92,12 @@ export const updateBookingStatus = async (req, res) => {
       return res.status(403).json({
         message: 'Not authorized to update this booking',
       });
+    }
+
+    if (
+      !['confirmed', 'in progress', 'completed', 'cancelled'].includes(status)
+    ) {
+      return res.status(400).json({ message: 'Invalid status' });
     }
 
     const currentStatus = booking.status;
@@ -143,7 +162,7 @@ export const getProviderEarnings = async (req, res) => {
       .populate('customerId', 'name');
 
     const totalEarnings = bookings.reduce(
-      (sum, booking) => sum + booking.priceAtBooking,
+      (sum, booking) => sum + (booking.priceAtBooking || 0),
       0
     );
 

@@ -11,7 +11,7 @@ const reviewSchema = new mongoose.Schema(
     serviceId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Service',
-      requred: true,
+      required: true,
     },
     providerId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -20,7 +20,7 @@ const reviewSchema = new mongoose.Schema(
     },
     customerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Provider',
+      ref: 'User',
       required: true,
     },
     rating: {

@@ -6,11 +6,14 @@ import {
   getAdminStats,
   getAllBookings,
   getAllProviders,
+  getAllUsers,
 } from './admin.controller.js';
 
 export const adminRouter = express.Router();
 
 adminRouter.get('/stats', protect, authorize('admin'), getAdminStats);
+
+adminRouter.get('/users', protect, authorize('admin'), getAllUsers);
 
 adminRouter.get('/providers', protect, authorize('admin'), getAllProviders);
 

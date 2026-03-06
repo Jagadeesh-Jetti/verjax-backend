@@ -6,6 +6,9 @@ import {
   getServiceReviews,
 } from './review.controller';
 
+import { protect } from '../../middleware/auth.middleware.js';
+import { authorize } from '../../middleware/role.middleware.js';
+
 export const reviewRouter = express.Router();
 
 reviewRouter.post('/', protect, authorize('customer'), createReview);

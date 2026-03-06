@@ -20,7 +20,7 @@ bookingRouter.post('/', protect, authorize('customer'), createBooking);
 bookingRouter.get('/my', protect, authorize('customer'), getMyBookings);
 
 bookingRouter.patch(
-  '/cancel/:id',
+  '/:id/cancel',
   protect,
   authorize('customer'),
   cancelBooking

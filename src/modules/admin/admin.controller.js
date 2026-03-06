@@ -5,11 +5,11 @@ import Service from '../service/service.model.js';
 
 export const getAdminStats = async (req, res) => {
   try {
-    const totalUsers = await User.coountDocuments({ role: 'customer' });
+    const totalUsers = await User.countDocuments({ role: 'customer' });
 
     const totalProviders = await Provider.countDocuments();
 
-    const approveProviders = await Provider.countDocuments({
+    const approvedProviders = await Provider.countDocuments({
       approvalStatus: 'approved',
     });
 
@@ -17,9 +17,15 @@ export const getAdminStats = async (req, res) => {
       approvalStatus: 'pending',
     });
 
+    const totalServices = await Service.countDocuments({ isActive: true });
+
     const totalBookings = await Booking.countDocuments();
 
-    const completedBookings = await Booking.aggregate([
+    const completedBookings = await Booking.countDocuments({
+      status: 'completed',
+    });
+
+    const revenueData = await Booking.aggregate([
       {
         $match: { status: 'completed' },
       },
@@ -38,6 +44,7 @@ export const getAdminStats = async (req, res) => {
       totalUsers,
       totalProviders,
       approvedProviders,
+      pendingProviders,
       totalServices,
       totalBookings,
       completedBookings,
