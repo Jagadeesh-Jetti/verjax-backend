@@ -10,7 +10,7 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({
         message: 'Email already registered',
@@ -34,11 +34,17 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    console.log(User);
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
+
     if (!user) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
@@ -48,9 +54,7 @@ export const login = async (req, res) => {
         role: user.role,
       },
       process.env.JWT_SECRET,
-      {
-        expiresIn: '1d',
-      }
+      { expiresIn: '1d' }
     );
 
     res.json({

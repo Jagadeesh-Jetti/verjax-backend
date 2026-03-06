@@ -1,3 +1,5 @@
+import Provider from '../modules/provider/provider.model.js';
+
 export const isProvider = async (req, res, next) => {
   try {
     const provider = await Provider.findOne({ userId: req.user.id });
