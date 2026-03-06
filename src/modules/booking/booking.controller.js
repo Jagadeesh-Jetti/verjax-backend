@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Booking from './booking.model.js';
 import Service from '../service/service.model.js';
 
@@ -53,7 +54,7 @@ export const getMyBookings = async (req, res) => {
 export const getProviderBookings = async (req, res) => {
   try {
     const bookings = await Booking.find({
-      providerId: req.user.id,
+      providerId: req.provider._id,
     })
       .populate('customerId', 'name phone')
       .populate('serviceId', 'title price');
@@ -74,6 +75,12 @@ export const updateBookingStatus = async (req, res) => {
       return res.status(404).json({ message: 'Booking not found' });
     }
 
+    if (booking.providerId.toString() !== req.provider._id.toString()) {
+      return res.status(403).json({
+        message: 'Not authorized to update this booking',
+      });
+    }
+
     const currentStatus = booking.status;
 
     const allowed = validTransitions[currentStatus];
@@ -85,7 +92,6 @@ export const updateBookingStatus = async (req, res) => {
     }
 
     booking.status = status;
-
     await booking.save();
 
     res.json({
@@ -105,6 +111,12 @@ export const cancelBooking = async (req, res) => {
       return res.status(404).json({ message: 'Booking not found' });
     }
 
+    if (booking.customerId.toString() !== req.user.id) {
+      return res.status(403).json({
+        message: 'Not authorized to cancel this booking',
+      });
+    }
+
     if (booking.status !== 'requested' && booking.status !== 'confirmed') {
       return res.status(400).json({
         message: 'Booking cannot be cancelled at this stage',
@@ -116,6 +128,75 @@ export const cancelBooking = async (req, res) => {
     await booking.save();
 
     res.json({ message: 'Booking cancelled' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getProviderEarnings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({
+      providerId: req.provider._id,
+      status: 'completed',
+    })
+      .populate('serviceId', 'title')
+      .populate('customerId', 'name');
+
+    const totalEarnings = bookings.reduce(
+      (sum, booking) => sum + booking.priceAtBooking,
+      0
+    );
+
+    res.json({
+      totalEarnings,
+      completedBookings: bookings.length,
+      bookings,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getProviderDashboardStats = async (req, res) => {
+  try {
+    const providerId = req.provider._id;
+
+    const totalBookings = await Booking.countDocuments({ providerId });
+
+    const completedJobs = await Booking.countDocuments({
+      providerId,
+      status: 'completed',
+    });
+
+    const pendingJobs = await Booking.countDocuments({
+      providerId,
+      status: { $in: ['requested', 'confirmed', 'in-progress'] },
+    });
+
+    const earningsData = await Booking.aggregate([
+      {
+        $match: {
+          providerId: new mongoose.Types.ObjectId(providerId),
+          status: 'completed',
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalEarnings: { $sum: '$priceAtBooking' },
+        },
+      },
+    ]);
+
+    const totalEarnings =
+      earningsData.length > 0 ? earningsData[0].totalEarnings : 0;
+
+    res.json({
+      totalBookings,
+      completedJobs,
+      pendingJobs,
+      totalEarnings,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -8,6 +8,8 @@ import {
   getProviderBookings,
   updateBookingStatus,
   cancelBooking,
+  getProviderEarnings,
+  getProviderDashboardStats,
 } from './booking.controller.js';
 import { isProvider } from '../../middleware/provider.middleware.js';
 
@@ -27,3 +29,17 @@ bookingRouter.patch(
 bookingRouter.get('/provider', protect, isProvider, getProviderBookings);
 
 bookingRouter.patch('/status/:id', protect, isProvider, updateBookingStatus);
+
+bookingRouter.get(
+  '/provider/earnings',
+  protect,
+  isProvider,
+  getProviderEarnings
+);
+
+bookingRouter.get(
+  '/provider/dashboard',
+  protect,
+  isProvider,
+  getProviderDashboardStats
+);

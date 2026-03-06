@@ -36,7 +36,7 @@ export const getMyProviderProfile = async (req, res) => {
     }).populate('userId', 'name email phone');
 
     if (!provider) {
-      return res.status(404).json({ message: error.message });
+      return res.status(404).json({ message: 'Provider profile not found' });
     }
     res.json(provider);
   } catch (error) {
