@@ -8,6 +8,8 @@ import {
   toggleAvailabilty,
 } from './provider.controller.js';
 import { authorize } from '../../middleware/role.middleware.js';
+import { isProvider } from '../../middleware/provider.middleware.js';
+// import { isProvider } from '../../middleware/provider.middlware.js';
 
 export const providerRouter = express.Router();
 
